@@ -192,6 +192,7 @@ connection.end();
 <video src="{{videoUrl}}" binderror="videoErrorCallback"></video>
 ```
 播放视频使用的是video标签，目前官方文档上只给出了两个参数说明，笔者测试了src支持加载`mp4`和`m3u8`格式
+
 |  属性名  |  类型       |           说明      |
 | :------: | :------:    |    :------------:   |
 | src      | String      |  要播放视频的资源地址   |
