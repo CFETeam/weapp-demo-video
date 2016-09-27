@@ -1,0 +1,15 @@
+{
+    "pages": [
+        "pages/video/video",
+        "pages/detail/detail",
+        "pages/index/index"
+    ],
+
+    "window": {
+        "backgroundTextStyle": "dark",
+        "navigationBarBackgroundColor": "#202020",
+        "navigationBarTitleText": "新片预告",
+        "windowBackground": "white",
+        "navigationBarTextStyle": "white"
+    }
+}

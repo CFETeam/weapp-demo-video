@@ -1,0 +1,10 @@
+{
+    "name": "video",
+    "script": "app.js",
+    "cwd": "./",
+    "exec_mode": "fork",
+    "watch": true,
+    "env": {
+        "NODE_ENV": "production"
+    }
+}

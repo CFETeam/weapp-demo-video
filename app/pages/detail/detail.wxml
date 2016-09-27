@@ -1,0 +1,31 @@
+<view class="container">
+    <video src="{{videoUrl}}"></video>
+    <view class="comment">
+    	<view class="list">
+    		<view class="item first-child">
+		        <view class="photo"><image src="{{avatar}}"></image></view>
+		        <view class="content">
+		            <input type="text" maxlength="50" class="input" bindchange="commentInputChange"/>
+		            <button class="button" bindtap="submitComment">发表评论</button>
+		        </view>
+		    </view>
+		    <view class="item" wx:for="{{commentList}}" wx:for-item="item">
+            	<view class="photo">
+		    		<image src="{{item.avatar}}"></image>
+		    	</view>
+		        <view class="content">
+		            <text class="top">{{item.nick}}</text>
+		            <text class="text">{{item.content}}</text>
+		        </view>
+	        </view>
+		</view>
+    </view>
+</view>
+
+<loading hidden="{{!showSubmitLoading}}">
+    发表中...
+</loading>
+
+<toast hidden="{{!showSubmitSuccessToast}}" duration="3000">
+    发表成功
+</toast>

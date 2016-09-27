@@ -1,0 +1,21 @@
+<scroll-view class="container" scroll-y="true" bindscrolltolower="scrollToLower">
+    <view class="video-container">
+        <view class="item-group" wx:for="{{layoutList}}" wx:for-item="group">
+            <block wx:for="{{group}}" wx:for-item="item">
+                <view class="video-item"
+                    data-src="{{item.video_url}}"
+                    data-title="{{item.video_title}}"
+                    data-vid="{{item.id}}"
+                    bindtap="gotoPlay">
+                    <image class="video-image" src="{{item.video_image}}" mode="aspectFill"></image>
+                    <image class="play-image" src="../../images/play.png"></image>
+                    <text class="video-title">{{item.video_title}}</text>
+                </view>
+            </block>
+        </view>
+    </view>
+</scroll-view>
+
+<loading hidden="{{!showLoding}}">
+    加载中...
+</loading>

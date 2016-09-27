@@ -1,0 +1,23 @@
+{
+  "name": "video-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "nodemon app.js",
+    "start": "pm2 start process.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "lodash": "^4.16.1",
+    "mysql": "^2.11.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.10.2"
+  }
+}
