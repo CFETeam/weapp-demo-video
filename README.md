@@ -2,14 +2,14 @@
 
 新片预告是结合腾讯云[点播 VOD](https://www.qcloud.com/product/vod.html)和[云数据库 MySQL](https://www.qcloud.com/product/cdb.html)制作的一个微信小程序示例。在代码结构上包含如下两部分：
 
-- `applet`: 新片预告应用包代码，可直接在微信开发者工具中作为项目打开
-- `server`: 搭建的Node服务端代码，作为服务器和`applet`通信，提供 CGI 接口示例用于拉取云数据库上的视频列表、评论列表、提交评论
+- `app`: 新片预告应用包代码，可直接在微信开发者工具中作为项目打开
+- `server`: 搭建的Node服务端代码，作为服务器和`app`通信，提供 CGI 接口示例用于拉取云数据库上的视频列表、评论列表，将评论数据提交到云数据库
 
 新片预告主要功能如下：
- * 分页滚动加载视频列表
- * 点击视频海报跳至详情页播放
- * 展示单个视频的评论列表
- * 对视频进行评论提交
+ * 支持分页滚动加载视频列表
+ * 点击海报跳转至详情页播放视频
+ * 对视频进行评论
+ * 展示视频的评论列表
 
 ![运行截图](https://share-10039692.file.myqcloud.com/app4.png)
 
@@ -51,7 +51,7 @@
 > 上述环境配置比较麻烦，新片预告的服务器运行代码和配置已经打包成[腾讯云 CVM 镜像](https://buy.qcloud.com/cvm?marketImgId=370)，推荐大家直接使用。
 > * 镜像部署完成之后，云主机上就有运行 WebSocket 服务的基本环境、代码和配置了。
 > * 腾讯云用户可以[免费领取礼包](https://www.qcloud.com/act/event/yingyonghao.html#section-voucher)，体验腾讯云小程序解决方案。
-> * 镜像已包含「剪刀石头布」和「小相册」两个小程序的服务器环境与代码，需要体验两个小程序的朋友无需重复部署
+> * 镜像已包含所有小程序的服务器环境与代码，需要体验小程序的朋友无需重复部署
 
 ### 3. 配置 HTTPS
 
@@ -80,12 +80,14 @@ nginx
 
 ### 5. 开通 点播服务
 
-新片预告示例的播放资源是存储在 腾讯云点播服务 上的mp4文件，要使用 点播 服务，需要登录 [点播 管理控制台](http://console.qcloud.com/vod)，然后在其中完成以下操作：
+新片预告示例的播放资源是存储在 腾讯云点播 上的mp4文件，要使用 点播 服务，需要登录 [点播 管理控制台](http://console.qcloud.com/video)，然后在其中完成以下操作：
 
-- 上传视频资源
+- 上传视频资源，点播几乎支持所有主流的[视频格式](https://www.qcloud.com/doc/product/266/2846)上传
 - 转码成功后获取mp4或m3u8源地址
 
-> 目前微信小程序video组件经测试支持mp4和m3u8格式，其中m3u8格式只能在手机上使用，开发者可以使用腾讯云点播控制台将视频源转码成mp4或m3u8格式，并且腾讯云点播会对播放的资源进行CDN加速。
+![上传转码](https://share-10039692.file.myqcloud.com/app5.png)
+
+> 目前微信小程序`video`组件经测试支持`mp4`和`m3u8`格式，其中 m3u8 格式只能在手机上使用，开发者可以使用腾讯云点播控制台将视频源转码成 mp4 或 m3u8 格式，并且腾讯云点播会对播放的资源进行CDN加速。
 
 ### 6. 准备 云数据库MySQL
 示例中拉取的视频和评论列表都是存储在 云数据库 上，要使用 [云数据库](https://www.qcloud.com/product/cdb.html) 服务需要完成以下操作
@@ -94,7 +96,7 @@ nginx
 - [初始化流程](https://www.qcloud.com/doc/product/236/3128)，本示例选用的是`utf8`编码
 - 点击[云数据库 控制台](https://console.qcloud.com/cdb)操作栏的`登录`按钮，登录到phpMyAdmin`创建数据库`并在当前数据库中导入本示例中的[SQL文件](https://share-10039692.file.myqcloud.com/wechat_app.sql)
 
-> 注意：导入SQL文件中包含了云点播上传的视频列表，开发者可以基于云数据库自行开发维护一个视频发布管理系统，因为此内容跟本示例暂不相关，所以不再详述。
+> 注意：导入SQL文件中包含了 点播 上传的视频列表，开发者可以基于云数据库自行开发维护一个视频发布管理系统，因为此内容跟本示例暂不相关，所以不再详述。
 
 ### 7. 启动新片预告示例 Node 服务
 
@@ -106,7 +108,7 @@ nginx
 cd /data/release/qcloud-applet-video
 ```
 
-在该目录下有个名为`config.js`的配置文件（如下所示），按注释修改对应的 COS 配置：
+在该目录下有个名为`config.js`的配置文件（如下所示），按注释修改对应的 MySQL 配置：
 
 ```js
 module.exports = {
@@ -191,11 +193,14 @@ connection.end();
 ```js
 <video src="{{videoUrl}}" binderror="videoErrorCallback"></video>
 ```
-播放视频使用的是video标签，目前官方文档上只给出了两个参数说明，笔者测试了src支持加载`mp4`和`m3u8`格式
 
 |  属性名  |  类型       |           说明      |
 | :------: | :------:    |    :------------:   |
 | src      | String      |  要播放视频的资源地址   |
 | binderror| EventHandle |  当发生错误时触发error事件，event.detail = {errMsg: 'something wrong'}  |
+
+播放视频使用的是video标签，目前官方文档上只给出了两个参数说明，笔者测试了src支持加载`mp4`和`m3u8`格式视频，
+video标签的控制条暂时没办法自定义样式以及隐藏
+
 
 
