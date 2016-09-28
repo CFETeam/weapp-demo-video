@@ -1,8 +1,8 @@
 {
     "pages": [
+        "pages/index/index",
         "pages/video/video",
-        "pages/detail/detail",
-        "pages/index/index"
+        "pages/detail/detail"
     ],
 
     "window": {
