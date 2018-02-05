@@ -40,6 +40,15 @@ Page({
                 return;
             }
             this.setData({totalPage: resp.data.totalPage});
+            
+            //对vid进行初始化，如果有的话就保留，如果没有的话，就默认时间戳
+            for( let i = 0 ; i < resp.data.list.length ; i++ ){
+                let cur = resp.data.list[i];
+                if( cur ){
+                    cur.id = cur.id || Date.now();
+                }
+            }
+            
             this.renderVideoList(resp.data.list);
         });
     },
